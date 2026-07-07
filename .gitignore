@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+.angular/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Data files (generated)
+backend-service-a/data/*.json
+!backend-service-a/data/.gitkeep
+
+# Go
+*.exe
+*.test
+*.out
+
+# Coverage
+coverage/
+.nyc_output/

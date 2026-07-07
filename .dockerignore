@@ -1,0 +1,7 @@
+**/node_modules
+**/dist
+**/.angular
+backend-service-a/data
+compose-build.log
+**/*.log
+.git

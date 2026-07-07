@@ -1,0 +1,102 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: fs-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./deploy/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: fs-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  service-a:
+    build:
+      context: .
+      dockerfile: backend-service-a/Dockerfile
+    container_name: fs-service-a
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-password123}@mongodb:27017/fs_assignment?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  service-b:
+    build:
+      context: .
+      dockerfile: backend/service-b/Dockerfile
+    container_name: fs-service-b
+    restart: unless-stopped
+    environment:
+      LOGS_MONGO_URI: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-password123}@mongodb:27017/fs_assignment_logs?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REPORT_GRPC_HOST: service-bonus
+      REPORT_GRPC_PORT: 50051
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      service-bonus:
+        condition: service_started
+
+  service-bonus:
+    build:
+      context: ./backend/service-bonus
+      dockerfile: Dockerfile
+    container_name: fs-service-bonus
+    restart: unless-stopped
+    environment:
+      GRPC_PORT: 50051
+    ports:
+      - "50051:50051"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fs-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      service-a:
+        condition: service_started
+
+volumes:
+  mongodb_data:
+  redis_data:

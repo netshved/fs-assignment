@@ -1,0 +1,40 @@
+{
+  "name": "service-a",
+  "version": "1.0.0",
+  "description": "NestJS Service A — ingestion and search",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "prestart:dev": "npm run build --prefix ../backend/libs/common",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@fs-assignment/common": "file:../backend/libs/common",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/core": "^10.4.15",
+    "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/swagger": "^8.1.0",
+    "axios": "^1.7.9",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "mongodb": "^6.12.0",
+    "multer": "^1.4.5-lts.1",
+    "redis": "^4.7.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.9",
+    "@nestjs/schematics": "^10.2.3",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.2",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
+    "typescript": "^5.7.2"
+  }
+}
