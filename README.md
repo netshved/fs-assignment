@@ -55,6 +55,15 @@ cd backend/service-bonus && go test ./...
 
 
 
+
+https://github.com/user-attachments/assets/83c5c402-3dfa-45b7-a7d2-1e2e45b74904
+
+
+
+
+
+
+
 ## Resilience notes
 
 - **Redis down** → Search/Ingestion APIs keep working; telemetry is dropped with warnings; PDF report returns 503 (no fake data).
