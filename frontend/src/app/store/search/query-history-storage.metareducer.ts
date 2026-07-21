@@ -1,4 +1,4 @@
-import { ActionReducer, INIT, MetaReducer, UPDATE } from '@ngrx/store';
+import { ActionReducer, INIT, UPDATE } from '@ngrx/store';
 import { EntityState } from '@ngrx/entity';
 import { AppState } from '../index';
 import { queryHistoryFeature } from './search.reducer';
@@ -31,8 +31,6 @@ export function queryHistoryStorageMetaReducer(reducer: ActionReducer<AppState>)
     return nextState;
   };
 }
-
-export const queryHistoryMetaReducers: MetaReducer<AppState>[] = [queryHistoryStorageMetaReducer];
 
 function readStoredQueries(): EntityState<SearchQuery> | null {
   if (typeof localStorage === 'undefined') return null;

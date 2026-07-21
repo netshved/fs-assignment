@@ -7,8 +7,8 @@ Full-stack test assignment.
 ```
 frontend (Angular + NgRx)  ──►  Service A /api/search (MongoDB index)
 
-service-a (NestJS :3000)  ──►  MongoDB + Redis TimeSeries + Streams
-service-b (NestJS :3002)  ──►  Logs + PDF (via gRPC)
+service-a (NestJS :3010)  ──►  MongoDB + Redis TimeSeries + Streams
+service-b (Go :3002)      ──►  Logs + PDF (via gRPC)
 service-bonus (Go :50051) ──►  PDF generation (bonus)
 ```
 
@@ -22,8 +22,8 @@ docker compose up --build
 | Service           | URL                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Frontend          | [http://localhost:4200](http://localhost:4200)                                                                     |
-| Service A Swagger | [http://localhost:3000/api/docs](http://localhost:3000/api/docs)                                                   |
-| Service A Search  | [http://localhost:3000/api/search?q=rick&page=1&limit=20](http://localhost:3000/api/search?q=rick&page=1&limit=20) |
+| Service A Swagger | [http://localhost:3010/api/docs](http://localhost:3010/api/docs)                                                   |
+| Service A Search  | [http://localhost:3010/api/search?q=rick&page=1&limit=20](http://localhost:3010/api/search?q=rick&page=1&limit=20) |
 | Service B Swagger | [http://localhost:3002/api/docs](http://localhost:3002/api/docs)                                                   |
 | Logs API          | [http://localhost:3002/api/logs](http://localhost:3002/api/logs)                                                   |
 | PDF Report        | [http://localhost:3002/api/report/pdf](http://localhost:3002/api/report/pdf)                                       |
@@ -37,7 +37,7 @@ docker compose up --build
 docker compose up mongodb redis service-bonus
 
 cd backend-service-a && npm install && npm run start:dev
-cd backend/service-b && npm install && npm run start:dev
+cd backend/service-b && go run ./cmd/server
 cd frontend && npm install && npm start
 ```
 
@@ -49,7 +49,7 @@ cd frontend && npm install && npm start
 cd frontend && npm test
 cd backend/libs/common && npm test
 cd backend-service-a && npm test
-cd backend/service-b && npm test
+cd backend/service-b && go test ./...
 cd backend/service-bonus && go test ./...
 ```
 

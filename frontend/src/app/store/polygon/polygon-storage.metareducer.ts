@@ -1,4 +1,4 @@
-import { Action, ActionReducer, INIT, MetaReducer, UPDATE } from '@ngrx/store';
+import { ActionReducer, INIT, UPDATE } from '@ngrx/store';
 import { EntityState } from '@ngrx/entity';
 import { AppState } from '../index';
 import { polygonFeature, CharacterPolygons } from './polygon.reducer';
@@ -30,8 +30,6 @@ export function polygonStorageMetaReducer(reducer: ActionReducer<AppState>): Act
     return nextState;
   };
 }
-
-export const metaReducers: MetaReducer<AppState>[] = [polygonStorageMetaReducer];
 
 function readStoredPolygons(): EntityState<CharacterPolygons> | null {
   if (typeof localStorage === 'undefined') return null;

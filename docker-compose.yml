@@ -42,9 +42,9 @@ services:
       MONGO_URI: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-password123}@mongodb:27017/fs_assignment?authSource=admin
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      PORT: 3000
+      PORT: 3010
     ports:
-      - "3000:3000"
+      - "3010:3010"
     depends_on:
       mongodb:
         condition: service_healthy

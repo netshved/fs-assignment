@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package report;
+
+option go_package = "github.com/fs-assignment/service-b/proto";
+
+service ReportService {
+  rpc GeneratePdf (ReportRequest) returns (ReportResponse);
+}
+
+message ReportRequest {
+  string filter_date = 1;
+  string filter_type = 2;
+  bytes time_series_json = 3;
+}
+
+message ReportResponse {
+  bytes pdf_content = 1;
+}

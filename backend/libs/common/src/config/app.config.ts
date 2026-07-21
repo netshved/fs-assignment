@@ -4,14 +4,6 @@ export function getMongoUri(): string {
   return process.env.MONGO_URI || 'mongodb://localhost:27017/fs_assignment';
 }
 
-export function getLogsMongoUri(): string {
-  return (
-    process.env.LOGS_MONGO_URI ||
-    process.env.MONGO_URI ||
-    'mongodb://localhost:27017/fs_assignment_logs'
-  );
-}
-
 export function getRedisUrl(): string {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = process.env.REDIS_PORT || '6379';

@@ -1,0 +1,131 @@
+basePath: /api
+definitions:
+  github_com_fs-assignment_service-b_internal_models.LogEntry:
+    properties:
+      _id:
+        type: string
+      eventType:
+        type: string
+      payload:
+        additionalProperties: true
+        type: object
+      timestamp:
+        type: string
+    type: object
+  github_com_fs-assignment_service-b_internal_service.PaginatedLogs:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/github_com_fs-assignment_service-b_internal_models.LogEntry'
+        type: array
+      meta:
+        $ref: '#/definitions/github_com_fs-assignment_service-b_internal_service.PaginationMeta'
+    type: object
+  github_com_fs-assignment_service-b_internal_service.PaginationMeta:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: Event logs and PDF reporting
+  title: Service B API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /logs:
+    get:
+      parameters:
+      - default: GET /search
+        description: Filter by event type
+        in: query
+        name: type
+        type: string
+      - default: "2020-01-01T00:00:00.000Z"
+        description: ISO date from
+        in: query
+        name: date_from
+        type: string
+      - default: "2030-12-31T23:59:59.999Z"
+        description: ISO date to
+        in: query
+        name: date_to
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 50
+        description: Page size
+        in: query
+        maximum: 200
+        minimum: 1
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_fs-assignment_service-b_internal_service.PaginatedLogs'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Query stored event logs
+      tags:
+      - logs
+  /report/pdf:
+    get:
+      parameters:
+      - default: "2026-07-20"
+        description: Report day (UTC), defaults to today
+        in: query
+        name: date
+        type: string
+      - default: all
+        description: Filter by telemetry action label, or 'all'
+        in: query
+        name: type
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: Service Unavailable
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate a PDF report with charts via the Go gRPC service
+      tags:
+      - report
+swagger: "2.0"

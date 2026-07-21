@@ -1,9 +1,9 @@
 import { DynamicModule, Global, Module, OnApplicationShutdown, Provider } from '@nestjs/common';
 import { Db, MongoClient } from 'mongodb';
-import { getLogsMongoUri, getMongoUri } from '../config/app.config';
-import { DATABASE_CONNECTION, LOGS_DATABASE_CONNECTION } from './mongo.types';
+import { getMongoUri } from '../config/app.config';
+import { DATABASE_CONNECTION } from './mongo.types';
 
-export type MongoConnectionName = 'main' | 'logs';
+export type MongoConnectionName = 'main';
 
 interface ConnectionSpec {
   token: string;
@@ -13,7 +13,6 @@ interface ConnectionSpec {
 
 const CONNECTIONS: Record<MongoConnectionName, ConnectionSpec> = {
   main: { token: DATABASE_CONNECTION, uri: getMongoUri, dbName: 'fs_assignment' },
-  logs: { token: LOGS_DATABASE_CONNECTION, uri: getLogsMongoUri, dbName: 'fs_assignment_logs' },
 };
 
 @Global()

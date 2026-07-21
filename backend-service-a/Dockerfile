@@ -22,7 +22,7 @@ RUN npm ci --omit=dev --install-links && npm cache clean --force
 COPY --from=builder /app/dist ./dist
 RUN mkdir -p /app/data && chown -R node:node /app
 USER node
-EXPOSE 3000
+EXPOSE 3010
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
-  CMD wget -qO- http://localhost:3000/api/health || exit 1
+  CMD wget -qO- http://localhost:3010/api/health || exit 1
 CMD ["node", "dist/main.js"]
