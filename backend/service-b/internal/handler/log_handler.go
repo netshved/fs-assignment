@@ -1,5 +1,3 @@
-// Package handler is the HTTP layer: request binding/validation and response
-// shaping only. Each route calls exactly one service method.
 package handler
 
 import (
@@ -17,7 +15,6 @@ type logHandler struct {
 	service *service.LogService
 }
 
-// listLogsRequest is the raw shape bound from the request's query string.
 type listLogsRequest struct {
 	Type     string `form:"type"`
 	DateFrom string `form:"date_from"`

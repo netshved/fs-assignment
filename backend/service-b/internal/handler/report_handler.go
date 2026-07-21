@@ -18,7 +18,6 @@ type reportHandler struct {
 
 var dateFormat = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 
-// downloadPdfRequest is the raw shape bound from the request's query string.
 type downloadPdfRequest struct {
 	Date string `form:"date"`
 	Type string `form:"type"`

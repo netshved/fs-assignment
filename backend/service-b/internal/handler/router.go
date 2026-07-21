@@ -28,10 +28,6 @@ func NewRouter(logService *service.LogService, reportService *service.ReportServ
 	api.GET("/logs", logs.GetLogs)
 	api.GET("/report/pdf", report.DownloadPdf)
 
-	// gin-swagger's WrapHandler 404s on the bare "/api/docs/" path (it only
-	// matches requests ending in a known filename like index.html), and Gin's
-	// router won't let a static "/api/docs/" route coexist with the "*any"
-	// catch-all below — so the empty-wildcard case is redirected here instead.
 	router.GET("/api/docs", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/api/docs/index.html")
 	})
@@ -47,8 +43,6 @@ func NewRouter(logService *service.LogService, reportService *service.ReportServ
 	return router
 }
 
-// cors mirrors the previous app.enableCors() default: reflect the request
-// origin and allow common methods/headers.
 func cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.GetHeader("Origin")

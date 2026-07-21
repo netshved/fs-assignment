@@ -10,14 +10,12 @@ import (
 	"github.com/fs-assignment/service-b/internal/repository"
 )
 
-// LogCreator is the one method EventConsumer needs from LogService —
-// declaring it here lets tests use a fake instead of a real repository.
 type LogCreator interface {
 	Create(ctx context.Context, eventType, timestamp string, payload map[string]interface{}) error
 }
 
 // EventConsumer reads Service A's events from a Redis Stream with a consumer
-// group. Unlike Pub/Sub, events published while this service is down stay in
+// group.  events published while this service is down stay in
 // the stream and are delivered after restart; unacknowledged events are
 // re-read first.
 type EventConsumer struct {
@@ -25,12 +23,10 @@ type EventConsumer struct {
 	logs LogCreator
 }
 
-// NewEventConsumer builds an EventConsumer over the given event repository and log creator.
 func NewEventConsumer(repo repository.EventRepository, logs LogCreator) *EventConsumer {
 	return &EventConsumer{repo: repo, logs: logs}
 }
 
-// Run consumes events until ctx is cancelled. Intended to run in its own goroutine.
 func (c *EventConsumer) Run(ctx context.Context) {
 	connected := false
 	for {
@@ -104,7 +100,6 @@ func (c *EventConsumer) handleBatch(ctx context.Context, batch []repository.Stre
 		payload := safeJSONParse(msg.Fields["payload"])
 
 		if err := c.logs.Create(ctx, eventType, timestamp, payload); err != nil {
-			// Not acked — the event stays pending and is retried on next startup.
 			log.Printf("[event-consumer] failed to store event %s: %v", msg.ID, err)
 			continue
 		}
@@ -114,8 +109,6 @@ func (c *EventConsumer) handleBatch(ctx context.Context, batch []repository.Stre
 	}
 }
 
-// safeJSONParse decodes a JSON object, defensively returning an empty map for
-// anything that isn't a valid JSON object.
 func safeJSONParse(raw string) map[string]interface{} {
 	if raw == "" {
 		return map[string]interface{}{}
@@ -127,7 +120,6 @@ func safeJSONParse(raw string) map[string]interface{} {
 	return out
 }
 
-// sleepCtx sleeps for d or returns false early if ctx is cancelled first.
 func sleepCtx(ctx context.Context, d time.Duration) bool {
 	timer := time.NewTimer(d)
 	defer timer.Stop()

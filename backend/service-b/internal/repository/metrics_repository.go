@@ -11,12 +11,7 @@ import (
 	"github.com/fs-assignment/service-b/internal/models"
 )
 
-// MetricsRepository is the read port for aggregated RedisTimeSeries metrics
-// recorded by Service A.
 type MetricsRepository interface {
-	// GetRange returns aggregated request counts (summed per bucket) across
-	// all action series, optionally filtered by action. Returns an error if
-	// Redis is unavailable — callers must surface that instead of inventing data.
 	GetRange(ctx context.Context, fromMs, toMs, bucketMs int64, action string) ([]models.MetricPoint, error)
 }
 
@@ -24,7 +19,6 @@ type redisMetricsRepository struct {
 	client *redis.Client
 }
 
-// NewRedisMetricsRepository builds a MetricsRepository over the constants.TSMetricsPrefix series.
 func NewRedisMetricsRepository(client *redis.Client) MetricsRepository {
 	return &redisMetricsRepository{client: client}
 }
@@ -47,8 +41,7 @@ func (r *redisMetricsRepository) GetRange(ctx context.Context, fromMs, toMs, buc
 	return mergeTimeSeries(raw), nil
 }
 
-// mergeTimeSeries sums values per bucket across all returned series and
-// returns them sorted ascending by timestamp.
+// mergeTimeSeries sums values per bucket across all returned series and returns them sorted ascending by timestamp.
 func mergeTimeSeries(raw interface{}) []models.MetricPoint {
 	buckets := map[int64]float64{}
 

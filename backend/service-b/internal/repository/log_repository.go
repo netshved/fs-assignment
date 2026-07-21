@@ -1,5 +1,3 @@
-// Package repository holds the data-access layer: Mongo/Redis wire concerns
-// only (filters, cursors, stream reads). No business rules live here.
 package repository
 
 import (
@@ -14,19 +12,14 @@ import (
 	"github.com/fs-assignment/service-b/internal/models"
 )
 
-// LogFilter narrows a log query. A nil From/To means that bound is open-ended.
 type LogFilter struct {
 	EventType string
 	From, To  *time.Time
 }
 
-// LogRepository is the persistence port for event logs.
 type LogRepository interface {
-	// EnsureIndexes creates the indexes log queries rely on. Safe to call on every boot.
 	EnsureIndexes(ctx context.Context) error
-	// Create stores a single log entry.
 	Create(ctx context.Context, entry models.LogEntry) error
-	// FindPage returns a page of entries matching filter, newest first, plus the total count.
 	FindPage(ctx context.Context, filter LogFilter, page, limit int) ([]models.LogEntry, int64, error)
 }
 
@@ -34,8 +27,6 @@ type mongoLogRepository struct {
 	col *mongo.Collection
 }
 
-// NewMongoLogRepository builds a LogRepository backed by the given database's
-// event_logs collection — the same collection the previous NestJS service used.
 func NewMongoLogRepository(db *mongo.Database) LogRepository {
 	return &mongoLogRepository{col: db.Collection(constants.LogsCollectionName)}
 }
@@ -81,8 +72,7 @@ func (r *mongoLogRepository) FindPage(ctx context.Context, filter LogFilter, pag
 	return data, total, nil
 }
 
-// buildFilter translates a LogFilter into a Mongo query. Pure function, kept
-// unexported and tested directly — no DB needed.
+// buildFilter translates a LogFilter into a Mongo query.
 func buildFilter(f LogFilter) bson.M {
 	filter := bson.M{}
 	if f.EventType != "" {

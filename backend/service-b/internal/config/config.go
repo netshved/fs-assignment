@@ -1,5 +1,3 @@
-// Package config is the single place environment variables are read from.
-// Every other package receives already-resolved values through Config.
 package config
 
 import (
@@ -7,7 +5,6 @@ import (
 	"os"
 )
 
-// Config holds every environment-derived setting this service needs.
 type Config struct {
 	Port           string
 	LogsMongoURI   string
@@ -15,8 +12,6 @@ type Config struct {
 	ReportGRPCAddr string
 }
 
-// Load reads Config from the environment, applying the same defaults the
-// previous NestJS service and docker-compose setup rely on.
 func Load() Config {
 	return Config{
 		Port:           getEnv("PORT", "3002"),

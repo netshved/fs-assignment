@@ -39,11 +39,6 @@ func main() {
 		}
 	}()
 
-	// Pinned to RESP2: TS.MRANGE's raw reply is parsed as an array of
-	// [key, labels, datapoints] triplets (redisMetricsRepository.mergeTimeSeries).
-	// Under RESP3 (go-redis v9's default) the same reply comes back as a
-	// map keyed by series name instead, so the type assertion there would
-	// silently fail and every report would render as if there were no data.
 	redisClient := redis.NewClient(&redis.Options{Addr: cfg.RedisAddr, Protocol: 2})
 	defer func() {
 		if err := redisClient.Close(); err != nil {
